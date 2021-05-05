@@ -338,6 +338,40 @@ func getLDAPResultCode(p *ber.Packet) (code uint8, description string) {
 		}
 	}
 
+	// fallback to fixed packet parsing
+	return getLDAPResultCodeFixed(p)
+}
+
+func getLDAPResultCodeFixed(p *ber.Packet) (code uint8, description string) {
+	if len(p.Children) >= 2 {
+		response := p.Children[1]
+		if response == nil {
+			code = ErrorNetwork
+			description = "Empty response in packet"
+			return
+		}
+
+		if response.ClassType == ber.ClassApplication && response.TagType == ber.TypeConstructed && len(response.Children) >= 3 {
+			switch response.Children[0].Value.(type) {
+			case uint64:
+				code = uint8(response.Children[0].Value.(uint64))
+			case int64:
+				code = uint8(response.Children[0].Value.(int64))
+			default:
+				code = ErrorNetwork
+				description = fmt.Sprintf("Invalid packet value: Value type %T", response.Children[0].Value)
+				return
+			}
+
+			if code == 0 { // No error
+				return
+			}
+
+			description = response.Children[2].Value.(string)
+			return
+		}
+	}
+
 	code = ErrorNetwork
 	description = "Invalid packet format"
 	return
