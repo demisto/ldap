@@ -8,9 +8,9 @@ package ldap
 import (
 	"crypto/tls"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	stackerr "github.com/go-errors/errors"
 	"github.com/mavricknz/asn1-ber"
-	log "github.com/sirupsen/logrus"
 	"net"
 	"os"
 	"sync"
