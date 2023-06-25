@@ -8,9 +8,9 @@ package ldap
 import (
 	"crypto/tls"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	stackerr "github.com/go-errors/errors"
-	"github.com/mavricknz/asn1-ber"
+	ber "github.com/mavricknz/asn1-ber"
+	log "github.com/sirupsen/logrus"
 	"net"
 	"os"
 	"sync"
@@ -46,6 +46,7 @@ func (fn TimedDialer) DialTimeout(n, a string, t time.Duration) (net.Conn, error
 }
 
 // Conn - LDAP Connection and also pre/post connect configuation
+//
 //	IsTLS bool // default false
 //	IsSSL bool // default false
 //	Debug bool // default false
@@ -56,8 +57,9 @@ func (fn TimedDialer) DialTimeout(n, a string, t time.Duration) (net.Conn, error
 //	Dialer         Dialable // default nil, optional network dialer to use (net.Dial()/net.DialTimeout() by default)
 //
 // A minimal connection...
-//  ldap := NewLDAPConnection("localhost",389)
-//  err := ldap.Connect() // Connects the existing connection, or returns an error
+//
+//	ldap := NewLDAPConnection("localhost",389)
+//	err := ldap.Connect() // Connects the existing connection, or returns an error
 type LDAPConnection struct {
 	IsTLS bool
 	IsSSL bool
